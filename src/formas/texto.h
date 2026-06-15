@@ -99,6 +99,8 @@ char getA_T (TEXTO t);
  */
 char* getTxto_T (TEXTO t);
 
+double getAltura_T (TEXTO t);
+
 
 /**
   * @brief Retorna o comprimento de linha do texto conforme o especificado (10 * número de caracteres)
@@ -107,6 +109,8 @@ char* getTxto_T (TEXTO t);
   * @return comprimento de linha do texto.
   */
 double comprimento_T (TEXTO t);
+
+double largura_T (TEXTO t);
 
 /**
   * @brief Retorna a coordenada x inicial do texto;
@@ -125,7 +129,7 @@ double calcX2_T (TEXTO t);
 
 
 /**
- * @brief Calcula a área do objeto Texto conforme o especificado (20 * número de caracteres).
+ * @brief Calcula a área do objeto Texto conforme o especificado (10 * número de caracteres).
  *
  * @param t texto.
  * @return Área calculada.

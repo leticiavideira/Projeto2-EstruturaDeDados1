@@ -103,11 +103,25 @@ char* getTxto_T (TEXTO t){
     return (t1->txto);
 }
 
+double getAltura_T (TEXTO t){
+    if (t == NULL)
+        return 0;
+    return (10.0);
+}
+
 double comprimento_T (TEXTO t){
     if (t == NULL)
         return 0;
     texto *t1 = ((texto*) t);
     return (10 * strlen(t1->txto));
+}
+
+double largura_T (TEXTO t){
+    if (t == NULL)
+        return 0;
+
+    texto *t1 = ((texto*) t);
+    return (strlen(t1->txto));
 }
 
 double calcX1_T (TEXTO t){
@@ -163,7 +177,7 @@ double calcularArea_T (TEXTO t){
     if (t == NULL)
         return 0;
      texto *t1 = ((texto*) t);
-    return (20 * strlen(t1->txto));
+    return (10 * strlen(t1->txto));
 }
 
 
