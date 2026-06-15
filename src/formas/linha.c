@@ -80,6 +80,13 @@ char* getCor_L (LINHA l){
     return (l1->cor);
 }
 
+double getAltura_L (LINHA l){
+    if (l == NULL)
+        return 0;
+    
+    return (1.5);
+}
+
 double calcularArea_L (LINHA l){
     if (l == NULL)
         return 0;
@@ -88,7 +95,7 @@ double calcularArea_L (LINHA l){
     double a = (l1->x2) - (l1->x1);
     double b = (l1->y2) - (l1->y1);
 
-    return ( 2 * sqrt(pow(a, 2) + pow(b, 2)));
+    return ( 1.5 * sqrt(pow(a, 2) + pow(b, 2)));
 }
 
 

@@ -92,6 +92,7 @@ double getY2_L (LINHA l);
  */
 char* getCor_L (LINHA l);
 
+double getAltura_L (LINHA l);
 
 /**
  * @brief Calcula a "área" associada à linha.
@@ -99,12 +100,12 @@ char* getCor_L (LINHA l);
  * No contexto deste programa, define-se a "área" da linha como sendo 10 vezes
  * o seu comprimento, ou seja:
  *
- *     área = 2 * sqrt((x2 - x1)² + (y2 - y1)²)
+ *     área = 1.5 * sqrt((x2 - x1)² + (y2 - y1)²)
  *
  * Essa definição permite a comparação com áreas de figuras geométricas reais.
  *
  * @param l Ponteiro para a linha.
- * @return Valor da "área" (comprimento * 10).
+ * @return Valor da "área" (comprimento * 1.5).
  */
 double calcularArea_L (LINHA l);
 
