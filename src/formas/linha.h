@@ -95,6 +95,16 @@ char* getCor_L (LINHA l);
 double getAltura_L (LINHA l);
 
 /**
+ * @brief Retorna a largura da linha.
+ *
+ * A largura é definida como a distância horizontal
+ * entre as extremidades da linha:
+ *
+ * largura = |x2 - x1|
+ */
+double getLargura_L (LINHA l);
+
+/**
  * @brief Calcula a "área" associada à linha.
  *
  * No contexto deste programa, define-se a "área" da linha como sendo 10 vezes

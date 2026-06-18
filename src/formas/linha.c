@@ -87,6 +87,13 @@ double getAltura_L (LINHA l){
     return (1.5);
 }
 
+double getLargura_L (LINHA l){
+    if (l == NULL)
+        return 0;
+    
+    return fabs(getX2_L(l) - getX1_L(l));
+}
+
 double calcularArea_L (LINHA l){
     if (l == NULL)
         return 0;
