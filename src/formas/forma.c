@@ -26,6 +26,144 @@ FORMA criarForma(FormaTipo tipo, void *data) {
     return f;
 }
 
+double getXForma (FORMA f){
+    if (f == NULL)
+        return -1;
+    FormaSt *forma = (FormaSt*) f;
+
+    switch (forma->tipo) {
+        case FORMA_CIRCULO:
+            return getX_C(forma->data);
+
+        case FORMA_RETANGULO:
+            return getX_R(forma->data);
+
+        case FORMA_LINHA:
+            return getX1_L(forma->data);
+
+        case FORMA_TEXTO:
+            return getX_T(forma->data);
+
+        default:
+            return -1;
+    }
+}
+
+double getYForma (FORMA f) {
+    if (f == NULL)
+        return -1;
+    FormaSt *forma = (FormaSt*) f;
+
+    switch (forma->tipo) {
+        case FORMA_CIRCULO:
+            return getY_C(forma->data);
+
+        case FORMA_RETANGULO:
+            return getY_R(forma->data);
+
+        case FORMA_LINHA:
+            return getY1_L(forma->data);
+
+        case FORMA_TEXTO:
+            return getY_T(forma->data);
+
+        default:
+            return -1;
+    }
+}
+
+double getAreaForma (FORMA f) {
+    if (f == NULL)
+        return -1;
+    FormaSt *forma = (FormaSt*) f;
+
+    switch (forma->tipo) {
+        case FORMA_CIRCULO:
+            return calcularArea_C(forma->data);
+
+        case FORMA_RETANGULO:
+            return calcularArea_R(forma->data);
+
+        case FORMA_LINHA:
+            return calcularArea_L(forma->data);
+
+        case FORMA_TEXTO:
+            return calcularArea_T(forma->data);
+
+        default:
+            return -1;
+    }
+}
+
+double getLarguraForma (FORMA f){
+    if (f == NULL)
+        return -1;
+    FormaSt *forma = (FormaSt*) f;
+
+    switch (forma->tipo) {
+        case FORMA_CIRCULO:
+            return getLargura_C(forma->data);
+
+        case FORMA_RETANGULO:
+            return getW_R(forma->data);
+
+        case FORMA_LINHA:
+            return getLargura_L(forma->data);
+
+        case FORMA_TEXTO:
+            return getLargura_T(forma->data);
+
+        default:
+            return -1;
+    }
+}
+
+double getAlturaForma (FORMA f){
+    if (f == NULL)
+        return -1;
+    FormaSt *forma = (FormaSt*) f;
+
+    switch (forma->tipo) {
+        case FORMA_CIRCULO:
+            return getAltura_C(forma->data);
+
+        case FORMA_RETANGULO:
+            return getH_R(forma->data);
+
+        case FORMA_LINHA:
+            return getAltura_L(forma->data);
+
+        case FORMA_TEXTO:
+            return getAltura_T(forma->data);
+
+        default:
+            return -1;
+    }
+}
+
+char* getCorPreenchimentoForma (FORMA f){
+    if (f == NULL)
+        return -1;
+    FormaSt *forma = (FormaSt*) f;
+
+    switch (forma->tipo) {
+        case FORMA_CIRCULO:
+            return getCorP_C(forma->data);
+
+        case FORMA_RETANGULO:
+            return getCorP_R(forma->data);
+
+        case FORMA_LINHA:
+            return getCor_L(forma->data);
+
+        case FORMA_TEXTO:
+            return getCorp_T(forma->data);
+
+        default:
+            return -1;
+    }
+}
+
 char* getNomeForma (FORMA f) {
     if (f == NULL) 
         return NULL;
