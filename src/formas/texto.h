@@ -108,9 +108,9 @@ double getAltura_T (TEXTO t);
   * @param t texto.
   * @return comprimento de linha do texto.
   */
-double comprimento_T (TEXTO t);
+double getComprimento_T (TEXTO t);
 
-double largura_T (TEXTO t);
+double getLargura_T (TEXTO t);
 
 /**
   * @brief Retorna a coordenada x inicial do texto;

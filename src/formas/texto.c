@@ -109,14 +109,14 @@ double getAltura_T (TEXTO t){
     return (10.0);
 }
 
-double comprimento_T (TEXTO t){
+double getComprimento_T (TEXTO t){
     if (t == NULL)
         return 0;
     texto *t1 = ((texto*) t);
     return (10 * strlen(t1->txto));
 }
 
-double largura_T (TEXTO t){
+double getLargura_T (TEXTO t){
     if (t == NULL)
         return 0;
 
