@@ -71,6 +71,9 @@ double getY_C (CIRCULO c);
  */
 double getR_C (CIRCULO c);
 
+double getLargura_C (CIRCULO c);
+
+double getAltura_C (CIRCULO c);
 
 /**
  * @brief Calcula e retorna a área do círculo.

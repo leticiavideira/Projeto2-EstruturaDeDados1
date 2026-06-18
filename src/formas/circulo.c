@@ -78,6 +78,22 @@ double getR_C (CIRCULO c){
 
 }
 
+double getLargura_C (CIRCULO c){
+    if (c == NULL)
+        return 0;
+    
+    circulo *c1 = ((circulo *) c);
+    return (c1->r * 2);
+}
+
+double getAltura_C (CIRCULO c) {
+    if (c == NULL)
+        return 0;
+    
+    circulo *c1 = ((circulo *) c);
+    return (c1->r * 2);
+}
+
 double calcularArea_C (CIRCULO c){
     if (c == NULL)
         return 0;
