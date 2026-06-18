@@ -44,6 +44,18 @@ typedef void* FORMA;
  */
 FORMA criarForma(FormaTipo tipo, void *data);
 
+double getXForma (FORMA f);
+
+double getYForma (FORMA f);
+
+double getAreaForma (FORMA f);
+
+double getLarguraForma (FORMA f);
+
+double getAlturaForma (FORMA f);
+
+char* getCorPreenchimentoForma (FORMA f);
+
 /**
  * @brief Retorna o nome textual da forma.
  *
