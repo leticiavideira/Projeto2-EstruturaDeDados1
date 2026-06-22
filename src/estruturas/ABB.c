@@ -16,7 +16,7 @@ typedef struct No{
 typedef struct {
     No* raiz;
     int tamanho;
-} StArvore;
+} ArvoreSt;
 
 /* ======================== FUNÇÕES AUXILIARES ======================== */
 static No* criarNo(FORMA f);
@@ -29,27 +29,76 @@ static void copiarEmOrdem(No *raiz, FORMA vet[], int *pos);
 
 /* ======================== FUNÇÕES PRINCIPAIS ======================== */
 
-ARVORE criarArvore();
+ARVORE criarArvore() {
+    ArvoreSt *a = (ArvoreSt *) malloc (sizeof (ArvoreSt));
+        if (a == NULL)
+            return NULL;
 
-void pushArvore (ARVORE a, FORMA f) {
-
+    a->raiz = NULL;
+    a->tamanho = 0;
+    return a;
 }
 
-FORMA buscaIdArvore (ARVORE a, int id);
+void pushArvore (ARVORE a, FORMA f) {
+    ArvoreSt *a1 = (ArvoreSt *) a;
+    a1->raiz = inserirNo(a1->raiz, f);
+    a1->tamanho++;
+}
 
-FORMA popIdArvore (ARVORE a, int id);
+FORMA buscaIdArvore (ARVORE a, int id){
+    ArvoreSt *a1 = (ArvoreSt *) a;
+    return buscaIdNo (a1->raiz, id);
+}
+
+FORMA popIdArvore (ARVORE a, int id){
+    ArvoreSt *a1 = (ArvoreSt *) a;
+
+    FORMA f = buscaIdNo (a1->raiz, id);
+        if (f == NULL)
+            return NULL;
+
+    FORMA removida = NULL;
+
+    a1->raiz = removerNo (a1->raiz, f, &removida);
+    a1->tamanho--;
+    return removida;
+}
 
 void percorrerArvore (ARVORE a);
 
-int arvoreParaVetor (ARVORE a, FORMA vet[]);
+int arvoreParaVetor (ARVORE a, FORMA vet[]){
+    ArvoreSt *a1 = (ArvoreSt *) a;
+    int pos = 0;
+    copiarEmOrdem (a1->raiz, vet, &pos);
+    return pos;
+}
 
-int tamanhoArvore (ARVORE a);
+int tamanhoArvore (ARVORE a){
+    ArvoreSt *a1 = (ArvoreSt *) a;
 
-int arvoreVazia (ARVORE a);
+    return a1->tamanho;
+}
 
-void limparArvore (ARVORE a);
+int arvoreVazia (ARVORE a){
+    ArvoreSt *a1 = (ArvoreSt *) a;
+    return a1->tamanho == 0;
+}
 
-void killArvore (ARVORE a);
+void limparArvore (ARVORE a) {
+    ArvoreSt *a1 = (ArvoreSt *) a;
+
+    destruirNos (a1->raiz);
+
+    a1->raiz = NULL;
+    a1->tamanho = 0;
+}
+
+void killArvore (ARVORE a) {
+    ArvoreSt *a1 = (ArvoreSt *) a;
+
+    limparArvore (a1);
+    free (a1);
+}
 
 /* ======================== IMPLEMENTAÇÃO DAS FUNÇÕES AUXILIARES ======================== */
 static No* criarNo(FORMA f){
