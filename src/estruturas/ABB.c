@@ -40,17 +40,24 @@ ARVORE criarArvore() {
 }
 
 void pushArvore (ARVORE a, FORMA f) {
+    if (a == NULL || f == NULL)
+        return;
     ArvoreSt *a1 = (ArvoreSt *) a;
     a1->raiz = inserirNo(a1->raiz, f);
     a1->tamanho++;
 }
 
 FORMA buscaIdArvore (ARVORE a, int id){
+    if (a == NULL)
+        return NULL;
+
     ArvoreSt *a1 = (ArvoreSt *) a;
     return buscaIdNo (a1->raiz, id);
 }
 
 FORMA popIdArvore (ARVORE a, int id){
+    if (a == NULL)
+        return NULL;
     ArvoreSt *a1 = (ArvoreSt *) a;
 
     FORMA f = buscaIdNo (a1->raiz, id);
@@ -60,13 +67,17 @@ FORMA popIdArvore (ARVORE a, int id){
     FORMA removida = NULL;
 
     a1->raiz = removerNo (a1->raiz, f, &removida);
-    a1->tamanho--;
+    if (removida != NULL)
+        a1->tamanho--;
     return removida;
 }
 
 void percorrerArvore (ARVORE a);
 
 int arvoreParaVetor (ARVORE a, FORMA vet[]){
+    if (a == NULL)
+        return -1;
+
     ArvoreSt *a1 = (ArvoreSt *) a;
     int pos = 0;
     copiarEmOrdem (a1->raiz, vet, &pos);
@@ -74,17 +85,26 @@ int arvoreParaVetor (ARVORE a, FORMA vet[]){
 }
 
 int tamanhoArvore (ARVORE a){
+    if (a == NULL)
+        return -1;
+
     ArvoreSt *a1 = (ArvoreSt *) a;
 
     return a1->tamanho;
 }
 
 int arvoreVazia (ARVORE a){
+    if (a == NULL)
+        return -1;
+
     ArvoreSt *a1 = (ArvoreSt *) a;
     return a1->tamanho == 0;
 }
 
 void limparArvore (ARVORE a) {
+    if (a == NULL)
+        return;
+
     ArvoreSt *a1 = (ArvoreSt *) a;
 
     destruirNos (a1->raiz);
@@ -94,6 +114,9 @@ void limparArvore (ARVORE a) {
 }
 
 void killArvore (ARVORE a) {
+    if (a == NULL)
+        return;
+
     ArvoreSt *a1 = (ArvoreSt *) a;
 
     limparArvore (a1);
@@ -116,9 +139,8 @@ static No* criarNo(FORMA f){
     return novo;
 }
 
+// FORMA f nunca deve ser NULL
 static No* inserirNo(No *raiz, FORMA f) {
-    if (f == NULL)
-        return NULL;
     if (raiz == NULL)
         return criarNo (f);
 
@@ -150,8 +172,9 @@ static FORMA buscaIdNo(No *raiz, int id){
 
 
 }
+// f e removida nunca poderão ser NULL
 static No* removerNo(No *raiz, FORMA f, FORMA *removida){
-    if (raiz == NULL || f == NULL || removida == NULL)
+    if (raiz == NULL)
         return NULL;
 
     int cmp = comparaDefault (f, raiz->forma);
@@ -190,7 +213,7 @@ static No* removerNo(No *raiz, FORMA f, FORMA *removida){
     //Para 2 filhos
     No *pred = maiorEsquerda(raiz->esq);
     raiz->forma = pred->forma;
-    FORMA lixo;
+    FORMA lixo = NULL;
     raiz->esq = removerNo (raiz->esq, pred->forma, &lixo);
     return raiz;
 
@@ -212,6 +235,7 @@ static void destruirNos(No *raiz) {
 
     destruirNos (raiz->esq);
     destruirNos (raiz->dir);
+    killForma (raiz->forma);
 
     free (raiz);
 }
