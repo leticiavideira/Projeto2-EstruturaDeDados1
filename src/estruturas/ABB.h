@@ -11,7 +11,11 @@ void pushArvore (ARVORE a, FORMA f);
 
 FORMA buscaIdArvore (ARVORE a, int id);
 
-FORMA removerIdArvore (ARVORE a, int id);
+FORMA popIdArvore (ARVORE a, int id);
+
+void percorrerArvore (ARVORE a);
+
+int arvoreParaVetor (ARVORE a, FORMA vet[]);
 
 int tamanhoArvore (ARVORE a);
 
