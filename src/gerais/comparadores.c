@@ -80,3 +80,25 @@ int comparaCor(FORMA a, FORMA b){
 
     return 0;
 }
+
+ComparadorForma obterComparador(CRITERIO crit){
+    switch (crit)
+    {
+        case DEFAULT:
+            return comparaDefault;
+
+        case AREA:
+            return comparaArea;
+
+        case LARGURA:
+            return comparaLargura;
+
+        case ALTURA:
+            return comparaAltura;
+
+        case COR:
+            return comparaCor;
+    }
+
+    return comparaDefault;
+}
