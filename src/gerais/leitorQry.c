@@ -30,6 +30,7 @@ typedef struct {
     FORMA *selecionadas;
     int qtdSel;
     int capSel;
+    int proxId;
 
 } QrySt;
 
@@ -75,6 +76,7 @@ LEITOR_QRY criarLeitorQry(char *dirSaida, DadosArquivo geo, DadosArquivo qry, AR
 
     novo->capSel = 32;
     novo->qtdSel = 0;
+    novo->proxId = obterMaiorIdArvore(banco);
     novo->selecionadas = malloc(sizeof(FORMA) * novo->capSel);
 
     if (novo->selecionadas == NULL){
@@ -167,6 +169,9 @@ static void exeCmdSel(QrySt *qry){
         return;
 
     FORMA *vet = malloc(sizeof(FORMA)*n);
+        if(vet == NULL)
+            return;
+
 
     arvoreParaVetor(qry->banco, vet);
 
@@ -205,16 +210,7 @@ static void exeCmdFind(QrySt *qry){
               &k, alg, crit, &x, &y, &dw) != 6)
         return;
 
-    produzirOrdenacao(
-        qry,
-        k,
-        lerAlgoritmo(alg),
-        lerCriterio(crit),
-        x,
-        y,
-        dw,
-        0
-    );
+    produzirOrdenacao(qry, k, lerAlgoritmo(alg), lerCriterio(crit), x, y, dw, 0);
 }
 
 static void exeCmdFindRm(QrySt *qry){
@@ -285,6 +281,8 @@ static void exeCmdCm(QrySt *qry){
 
         if(copia == NULL)
             continue;
+
+        setIdForma(copia, qry->proxId++);
 
         moverForma(copia, dx, dy);
 
@@ -504,6 +502,8 @@ static void produzirOrdenacao(QrySt *qry, int k, ALGORITMO alg, CRITERIO crit, d
             if(removida != NULL)
                 killForma(removida);
         }
+
+        limparSelecao(qry);
     }
 
     free(vet);
