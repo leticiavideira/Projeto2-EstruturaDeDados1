@@ -164,6 +164,91 @@ char* getCorPreenchimentoForma (FORMA f){
     }
 }
 
+char* getCorBordaForma(FORMA f){
+    if(f == NULL)
+        return NULL;
+
+    FormaSt *forma = (FormaSt*) f;
+
+    switch(forma->tipo){
+
+        case FORMA_CIRCULO:
+            return getCorB_C(forma->data);
+
+        case FORMA_RETANGULO:
+            return getCorB_R(forma->data);
+
+        case FORMA_LINHA:
+            return getCor_L(forma->data);
+
+        case FORMA_TEXTO:
+            return getCorb_T(forma->data);
+
+        default:
+            return NULL;
+    }
+}
+
+double getRaioForma(FORMA f){
+    if(f == NULL)
+        return -1;
+
+    FormaSt *forma = (FormaSt*) f;
+
+    if(forma->tipo == FORMA_CIRCULO)
+        return getR_C(forma->data);
+
+    return -1;
+}
+
+double getX2Forma(FORMA f){
+    if(f == NULL)
+        return -1;
+
+    FormaSt *forma = (FormaSt*) f;
+
+    if(forma->tipo == FORMA_LINHA)
+        return getX2_L(forma->data);
+
+    return -1;
+}
+
+double getY2Forma(FORMA f){
+    if(f == NULL)
+        return -1;
+
+    FormaSt *forma = (FormaSt*) f;
+
+    if(forma->tipo == FORMA_LINHA)
+        return getY2_L(forma->data);
+
+    return -1;
+}
+
+char getAncoraTextoForma(FORMA f){
+    if(f == NULL)
+        return '\0';
+
+    FormaSt *forma = (FormaSt*) f;
+
+    if(forma->tipo == FORMA_TEXTO)
+        return getA_T(forma->data);
+
+    return '\0';
+}
+
+char* getConteudoTextoForma(FORMA f){
+    if(f == NULL)
+        return NULL;
+
+    FormaSt *forma = (FormaSt*) f;
+
+    if(forma->tipo == FORMA_TEXTO)
+        return getTxto_T(forma->data);
+
+    return NULL;
+}
+
 char* getNomeForma (FORMA f) {
     if (f == NULL) 
         return NULL;
@@ -263,6 +348,36 @@ void* getDataForma(FORMA f) {
     if (f == NULL)
         return NULL;
     return ((FormaSt*)f)->data;
+}
+
+void setIdForma(FORMA f, int id){
+
+    if(f == NULL)
+        return;
+
+    FormaSt *forma = (FormaSt*) f;
+
+    switch(forma->tipo){
+
+        case FORMA_CIRCULO:
+            setId_C(forma->data, id);
+            break;
+
+        case FORMA_RETANGULO:
+            setId_R(forma->data, id);
+            break;
+
+        case FORMA_LINHA:
+            setId_L(forma->data, id);
+            break;
+
+        case FORMA_TEXTO:
+            setId_T(forma->data, id);
+            break;
+
+        default:
+            break;
+    }
 }
 
 void setCorBordaForma(FORMA f, char *cor) {

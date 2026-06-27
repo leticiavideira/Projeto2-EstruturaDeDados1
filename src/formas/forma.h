@@ -56,6 +56,18 @@ double getAlturaForma (FORMA f);
 
 char* getCorPreenchimentoForma (FORMA f);
 
+char* getCorBordaForma(FORMA f);
+
+double getRaioForma(FORMA f);
+
+double getX2Forma(FORMA f);
+
+double getY2Forma(FORMA f);
+
+char getAncoraTextoForma(FORMA f);
+
+char* getConteudoTextoForma(FORMA f);
+
 /**
  * @brief Retorna o nome textual da forma.
  *
@@ -106,6 +118,8 @@ FormaTipo getTipoForma(FORMA f);
  * @warning O uso deste ponteiro deve respeitar o tipo da forma.
  */
 void* getDataForma(FORMA f);
+
+void setIdForma(FORMA f, int id);
 
 /**
  * @brief Define a cor da borda da forma.
