@@ -123,6 +123,30 @@ void killArvore (ARVORE a) {
     free (a1);
 }
 
+int obterMaiorIdArvore(ARVORE arv){
+
+    int n = tamanhoArvore(arv);
+
+    if(n == 0)
+        return 0;
+
+    FORMA *vet = malloc(sizeof(FORMA) * n);
+
+    arvoreParaVetor(arv, vet);
+
+    int maior = getIdForma(vet[0]);
+
+    for(int i = 1; i < n; i++){
+
+        if(getIdForma(vet[i]) > maior)
+            maior = getIdForma(vet[i]);
+    }
+
+    free(vet);
+
+    return maior;
+}
+
 /* ======================== IMPLEMENTAÇÃO DAS FUNÇÕES AUXILIARES ======================== */
 static No* criarNo(FORMA f){
     if (f == NULL)

@@ -25,4 +25,6 @@ void limparArvore (ARVORE a);
 
 void killArvore (ARVORE a);
 
+int obterMaiorIdArvore(ARVORE arv);
+
 #endif
