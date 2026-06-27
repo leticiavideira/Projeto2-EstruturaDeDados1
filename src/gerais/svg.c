@@ -30,6 +30,12 @@ typedef struct {
     int qtdMarcadas;
     int capMarcadas;
 
+    double ordX;
+    double ordY;
+    double ordDW;
+
+    int layoutOrdenacaoAtivo;
+
 } SvgSt;
 
 /* ======================== FUNÇÕES AUXILIARES ======================== */
@@ -40,8 +46,10 @@ static char *montarNomeInicial(SvgSt *svg);
 static char *montarNomeFinal(SvgSt *svg);
 static char *montarNomeSnapshot(SvgSt *svg);
 static FILE *abrirSVG(char *nome);  
+static void fecharSVG(FILE *arq);
 static void desenharForma(FILE *arq,FORMA f);  
 static void desenharBanco(FILE *arq,ARVORE banco);
+static void desenharVetorOrdenacao(FILE *arq, SvgSt *svg, FORMA vet[], int n);
 
 
 /* ======================== FUNÇÔES PRINCIPAIS ======================== */
@@ -72,6 +80,17 @@ SVG criarSVG(char *dirSaida,
     svg->capMarcadas=8;
 
     svg->marcadas=malloc(sizeof(FORMA)*svg->capMarcadas);
+        if(svg->marcadas == NULL){
+        free(svg->dirSaida);
+        free(svg);
+        return NULL;
+}
+
+    svg->layoutOrdenacaoAtivo = 0;
+
+    svg->ordX = 0;
+    svg->ordY = 0;
+    svg->ordDW = 0;
 
     return svg;
 }
@@ -183,33 +202,36 @@ void gerarSVGFinal(SVG s, ARVORE banco){
 }
 
 //SNAPSHOTS DA ORDENAÇÃO
-void gerarSnapshotOrdenacao(SVG s, ARVORE banco){
-
-    if(s==NULL || banco==NULL)
+void gerarSnapshotOrdenacao(SVG s, ARVORE banco, FORMA vet[], int n){
+    if(s == NULL || banco == NULL)
         return;
 
-    SvgSt *svg=s;
+    SvgSt *svg = s;
 
-    char *nome=montarNomeSnapshot(svg);
+    if(svg->qry == NULL)
+        return;
 
-    FILE *arq=abrirSVG(nome);
+    char *nome = montarNomeSnapshot(svg);
+
+    FILE *arq = abrirSVG(nome);
 
     free(nome);
 
-    if(arq==NULL)
+    if(arq == NULL)
         return;
 
-    desenharBanco(arq,banco);
+    desenharBanco(arq, banco);
 
-    desenharSelecao(arq,svg);
+    desenharSelecao(arq, svg);
 
-    desenharMarcadores(arq,svg);
+    desenharMarcadores(arq, svg);
+
+    desenharVetorOrdenacao(arq, svg, vet, n);
 
     fecharSVG(arq);
 
     svg->snapshotAtual++;
 }
-
 //SELEÇÃO
 void svgDefinirSelecao(SVG s,
                        double x,
@@ -252,13 +274,11 @@ void svgMarcarAncora(SVG s, FORMA forma){
 
         svg->capMarcadas*=2;
 
-        svg->marcadas=realloc(
-            svg->marcadas,
-            sizeof(FORMA)*svg->capMarcadas
-        );
+        FORMA *novo = realloc(svg->marcadas, sizeof(FORMA) * svg->capMarcadas);
+            if(novo == NULL)
+                return;
 
-        if(svg->marcadas==NULL)
-            exit(1);
+        svg->marcadas = novo;
     }
 
     svg->marcadas[svg->qtdMarcadas]=forma;
@@ -276,7 +296,26 @@ void svgLimparMarcadores(SVG s){
     svg->qtdMarcadas=0;
 }
 
+void svgIniciarMarcadores(SVG s){
+    svgLimparMarcadores(s);
+}
 
+void svgFinalizarMarcadores(SVG s){
+
+}
+
+void svgDefinirLayoutOrdenacao(SVG s, double x, double y, double dw){
+    if(s == NULL)
+        return;
+
+    SvgSt *svg = s;
+
+    svg->layoutOrdenacaoAtivo = 1;
+
+    svg->ordX = x;
+    svg->ordY = y;
+    svg->ordDW = dw;
+}
 /* ======================== IMPLEMENTAÇÃO DAS FUNÇÕES AUXILIARES ======================== */
 static char *duplicarString(const char *s){
 
@@ -307,9 +346,6 @@ static char *removerExtensao(char *nome){
     return duplicarString(copia);
 }
 
-/*
-cidade.svg
-*/
 static char *montarNomeInicial(SvgSt *svg){
 
     char *base=removerExtensao(getNomeArq(svg->geo));
@@ -327,9 +363,6 @@ static char *montarNomeInicial(SvgSt *svg){
     return caminho;
 }
 
-/*
-cidade-consulta.svg
-*/
 static char *montarNomeFinal(SvgSt *svg){
 
     char *baseGeo=removerExtensao(getNomeArq(svg->geo));
@@ -369,24 +402,31 @@ static char *montarNomeFinal(SvgSt *svg){
     return caminho;
 }
 
-/*
-cidade-q000001.svg
-*/
 static char *montarNomeSnapshot(SvgSt *svg){
 
-    char *baseGeo=removerExtensao(getNomeArq(svg->geo));
+    if(svg->qry == NULL)
+        return NULL;
 
-    size_t tam=strlen(svg->dirSaida)+strlen(baseGeo)+30;
+    char *baseGeo = removerExtensao(getNomeArq(svg->geo));
+    char *baseQry = removerExtensao(getNomeArq(svg->qry));
 
-    char *caminho=malloc(tam);
+    size_t tam =
+        strlen(svg->dirSaida) +
+        strlen(baseGeo) +
+        strlen(baseQry) +
+        30;
+
+    char *caminho = malloc(tam);
 
     sprintf(caminho,
-            "%s/%s-q%06d.svg",
+            "%s/%s-%s%06d.svg",
             svg->dirSaida,
             baseGeo,
+            baseQry,
             svg->snapshotAtual);
 
     free(baseGeo);
+    free(baseQry);
 
     return caminho;
 }
@@ -531,5 +571,57 @@ static void desenharBanco(FILE *arq,ARVORE banco){
         desenharForma(arq,vet[i]);
 
     free(vet);
+}
+
+static void desenharVetorOrdenacao(FILE *arq, SvgSt *svg, FORMA vet[], int n){
+    if(!svg->layoutOrdenacaoAtivo)
+        return;
+
+    if(vet == NULL || n <= 0)
+        return;
+
+    for(int i=0;i<n;i++){
+
+        double x = svg->ordX + i * svg->ordDW;
+        double y = svg->ordY;
+
+        fprintf(arq,
+            "<circle "
+            "cx='%.2lf' "
+            "cy='%.2lf' "
+            "r='4' "
+            "fill='blue'/>\n",
+            x,
+            y);
+
+        fprintf(arq,
+            "<text "
+            "x='%.2lf' "
+            "y='%.2lf' "
+            "font-size='9' "
+            "text-anchor='middle'>"
+            "%d"
+            "</text>\n",
+            x,
+            y - 8,
+            i);
+
+        double ax, ay;
+
+        getAncoraForma(vet[i], &ax, &ay);
+
+        fprintf(arq,
+            "<line "
+            "x1='%.2lf' "
+            "y1='%.2lf' "
+            "x2='%.2lf' "
+            "y2='%.2lf' "
+            "stroke='blue' "
+            "stroke-width='1'/>\n",
+            x,
+            y,
+            ax,
+            ay);
+    }
 }
 
