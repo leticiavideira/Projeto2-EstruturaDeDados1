@@ -189,6 +189,3 @@ void destruirDadosArq (DadosArquivo arqData){
         free (arqData);
     }
 }
-
-
-
