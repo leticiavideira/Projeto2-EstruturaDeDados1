@@ -135,10 +135,10 @@ double calcX1_T (TEXTO t){
             x1 = t1->x;
 
         } else if (t1->a == 'f'){
-            x1 = (t1->x - comprimento_T(t1));
+            x1 = (t1->x - getComprimento_T(t1));
 
         } else if (t1->a == 'm'){
-            x1 = (t1->x - (comprimento_T(t1) / 2));
+            x1 = (t1->x - (getComprimento_T(t1) / 2));
 
         } else {
             printf ("Ancora nao reconhecida.\n");
@@ -155,13 +155,13 @@ double calcX2_T (TEXTO t){
     double x2;
 
         if (t1->a == 'i'){
-            x2 = (t1->x + comprimento_T(t1));
+            x2 = (t1->x + getComprimento_T(t1));
 
         } else if (t1->a == 'f'){
             x2 = t1->x;
 
         } else if (t1->a == 'm'){
-            x2 = (t1->x + (comprimento_T(t1) / 2));
+            x2 = (t1->x + (getComprimento_T(t1) / 2));
 
         } else {
             printf ("Ancora nao reconhecida.\n");
