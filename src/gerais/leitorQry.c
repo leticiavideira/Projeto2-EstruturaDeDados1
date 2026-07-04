@@ -160,6 +160,10 @@ static void exeCmdSel(QrySt *qry){
     if(fscanf(arq,"%lf %lf %lf %lf",
               &x,&y,&w,&h) != 4)
         return;
+    
+    fprintf(qry->txt,
+        "[*] sel %.2lf %.2lf %.2lf %.2lf\n",
+        x,y,w,h);
 
     limparSelecao(qry);
 
@@ -190,7 +194,7 @@ static void exeCmdSel(QrySt *qry){
 
     free(vet);
 
-    /* desenhar retângulo vermelho no SVG depois */
+    svgDesenharSelecao(qry->svg, x, y, w, h);
 }
 
 static void exeCmdFind(QrySt *qry){
@@ -209,6 +213,10 @@ static void exeCmdFind(QrySt *qry){
               "%d %31s %31s %lf %lf %lf",
               &k, alg, crit, &x, &y, &dw) != 6)
         return;
+
+    fprintf(qry->txt,
+        "[*] find %d %s %s %.2lf %.2lf %.2lf\n",
+        k,alg,crit,x,y,dw);
 
     produzirOrdenacao(qry, k, lerAlgoritmo(alg), lerCriterio(crit), x, y, dw, 0);
 }
@@ -229,6 +237,10 @@ static void exeCmdFindRm(QrySt *qry){
               "%d %31s %31s %lf %lf %lf",
               &k, alg, crit, &x, &y, &dw) != 6)
         return;
+
+    fprintf(qry->txt,
+        "[*] findrm %d %s %s %.2lf %.2lf %.2lf\n",
+        k,alg,crit,x,y,dw);
 
     produzirOrdenacao(
         qry,
@@ -257,6 +269,10 @@ static void exeCmdCm(QrySt *qry){
               "%lf %lf %lf %lf %lf %lf",
               &x,&y,&w,&h,&dx,&dy) != 6)
         return;
+
+    fprintf(qry->txt,
+        "[*] cm %.2lf %.2lf %.2lf %.2lf %.2lf %.2lf\n",
+        x,y,w,h,dx,dy);
 
     limparSelecao(qry);
 
@@ -309,17 +325,19 @@ static void exeCmdMc(QrySt *qry){
               corPreenchimento) != 2)
         return;
 
+    fprintf(qry->txt,
+        "[*] mc %s %s\n",
+        corBorda,
+        corPreenchimento);
+
     for(int i = 0; i < qry->qtdSel; i++){
 
-        setCorBordaForma(
-            qry->selecionadas[i],
-            corBorda
-        );
+        FORMA f = qry->selecionadas[i];
 
-        setCorPreenchimentoForma(
-            qry->selecionadas[i],
-            corPreenchimento
-        );
+        setCorBordaForma(f, corBorda);
+
+        if(getTipoForma(f) != FORMA_LINHA)
+            setCorPreenchimentoForma(f, corPreenchimento);
     }
 }
 
@@ -455,6 +473,9 @@ static CRITERIO lerCriterio(char *crit){
 }
 
 static void produzirOrdenacao(QrySt *qry, int k, ALGORITMO alg, CRITERIO crit, double x, double y, double dw, int remover){
+    svgLimparPontos(qry->svg);
+    svgLimparMarcadores(qry->svg);
+
     int n;
 
     FORMA *vet = selecionadasParaVetor(qry, &n);
@@ -462,11 +483,21 @@ static void produzirOrdenacao(QrySt *qry, int k, ALGORITMO alg, CRITERIO crit, d
     if(vet == NULL || n == 0)
         return;
 
+    svgDefinirLayoutOrdenacao(
+        qry->svg,
+        x,
+        y,
+        dw
+    );
+
     ordenar(
         vet,
         n,
+        k,
         alg,
-        obterComparador(crit)
+        obterComparador(crit),
+        qry->svg,
+        qry->banco
     );
 
     if(k > n)
@@ -480,18 +511,17 @@ static void produzirOrdenacao(QrySt *qry, int k, ALGORITMO alg, CRITERIO crit, d
             y
         );
 
+        svgMarcarAncora(qry->svg, vet[i]);
+
         imprimirFormaSelecionada(
             qry->txt,
             vet[i],
             crit
         );
 
-        /* depois:
-           desenhar marcador vermelho no SVG */
     }
 
     if(remover){
-
         for(int i = k; i < n; i++){
 
             FORMA removida = popIdArvore(
@@ -503,9 +533,13 @@ static void produzirOrdenacao(QrySt *qry, int k, ALGORITMO alg, CRITERIO crit, d
                 killForma(removida);
         }
 
-        limparSelecao(qry);
+        qry->qtdSel = k;
+
+        for(int i = 0; i < k; i++)
+            qry->selecionadas[i] = vet[i];
     }
 
+    svgFinalizarLayoutOrdenacao(qry->svg);
     free(vet);
 }
 
