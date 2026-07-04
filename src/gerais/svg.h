@@ -44,4 +44,12 @@ void svgFinalizarMarcadores(SVG svg);
 
 void svgDefinirLayoutOrdenacao(SVG svg, double x, double y, double dw);
 
+void svgDesenharSelecao(SVG s, double x, double y, double w, double h);
+
+void svgMarcarPonto(SVG s, double x, double y);
+
+void svgLimparPontos (SVG s);
+
+void svgFinalizarLayoutOrdenacao(SVG s);
+
 #endif

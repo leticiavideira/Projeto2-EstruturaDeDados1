@@ -10,6 +10,11 @@
 #include "../formas/linha.h"
 #include "../formas/texto.h"
 
+typedef struct{
+    double x;
+    double y;
+} PontoMarcado;
+
 typedef struct {
 
     char *dirSaida;
@@ -36,7 +41,12 @@ typedef struct {
 
     int layoutOrdenacaoAtivo;
 
+    PontoMarcado *pontos;
+    int qtdPontos;
+    int capPontos;
+
 } SvgSt;
+
 
 /* ======================== FUNÇÕES AUXILIARES ======================== */
 
@@ -50,7 +60,7 @@ static void fecharSVG(FILE *arq);
 static void desenharForma(FILE *arq,FORMA f);  
 static void desenharBanco(FILE *arq,ARVORE banco);
 static void desenharVetorOrdenacao(FILE *arq, SvgSt *svg, FORMA vet[], int n);
-
+static void desenharPontos(FILE *arq, SvgSt *svg);
 
 /* ======================== FUNÇÔES PRINCIPAIS ======================== */
 SVG criarSVG(char *dirSaida,
@@ -88,6 +98,18 @@ SVG criarSVG(char *dirSaida,
 
     svg->layoutOrdenacaoAtivo = 0;
 
+    svg->capPontos = 8;
+    svg->qtdPontos = 0;
+
+    svg->pontos = malloc(sizeof(PontoMarcado) * svg->capPontos);
+
+    if(svg->pontos == NULL){
+        free(svg->marcadas);
+        free(svg->dirSaida);
+        free(svg);
+        return NULL;
+    }
+
     svg->ordX = 0;
     svg->ordY = 0;
     svg->ordDW = 0;
@@ -103,6 +125,8 @@ void destruirSVG(SVG s){
     SvgSt *svg=s;
 
     free(svg->marcadas);
+
+    free (svg->pontos);
 
     free(svg->dirSaida);
 
@@ -153,6 +177,22 @@ static void desenharMarcadores(FILE *arq, SvgSt *svg){
     }
 }
 
+static void desenharPontos(FILE *arq, SvgSt *svg){
+
+    for(int i = 0; i < svg->qtdPontos; i++){
+
+        fprintf(arq,
+            "<circle "
+            "cx='%.2lf' "
+            "cy='%.2lf' "
+            "r='4' "
+            "fill='red'/>\n",
+
+            svg->pontos[i].x,
+            svg->pontos[i].y);
+    }
+}
+
 //SVG INICIAL
 void gerarSVGInicial(SVG s, ARVORE banco){
 
@@ -198,6 +238,8 @@ void gerarSVGFinal(SVG s, ARVORE banco){
 
     desenharMarcadores(arq,svg);
 
+    desenharPontos(arq, svg);
+
     fecharSVG(arq);
 }
 
@@ -225,6 +267,8 @@ void gerarSnapshotOrdenacao(SVG s, ARVORE banco, FORMA vet[], int n){
     desenharSelecao(arq, svg);
 
     desenharMarcadores(arq, svg);
+
+    desenharPontos(arq, svg);
 
     desenharVetorOrdenacao(arq, svg, vet, n);
 
@@ -316,6 +360,17 @@ void svgDefinirLayoutOrdenacao(SVG s, double x, double y, double dw){
     svg->ordY = y;
     svg->ordDW = dw;
 }
+
+void svgFinalizarLayoutOrdenacao(SVG s){
+
+    if(s==NULL)
+        return;
+
+    SvgSt *svg=s;
+
+    svg->layoutOrdenacaoAtivo=0;
+}
+
 /* ======================== IMPLEMENTAÇÃO DAS FUNÇÕES AUXILIARES ======================== */
 static char *duplicarString(const char *s){
 
@@ -623,5 +678,44 @@ static void desenharVetorOrdenacao(FILE *arq, SvgSt *svg, FORMA vet[], int n){
             ax,
             ay);
     }
+}
+
+void svgDesenharSelecao(SVG s, double x, double y, double w, double h){
+    svgDefinirSelecao(s, x, y, w, h);
+}
+
+void svgMarcarPonto(SVG s, double x, double y){
+     if(s == NULL)
+        return;
+
+    SvgSt *svg = s;
+
+    if(svg->qtdPontos == svg->capPontos){
+
+        svg->capPontos *= 2;
+
+        PontoMarcado *novo =
+            realloc(svg->pontos,
+                    sizeof(PontoMarcado) * svg->capPontos);
+
+        if(novo == NULL)
+            return;
+
+        svg->pontos = novo;
+    }
+
+    svg->pontos[svg->qtdPontos].x = x;
+    svg->pontos[svg->qtdPontos].y = y;
+
+    svg->qtdPontos++;
+}
+
+void svgLimparPontos(SVG s){
+    if(s == NULL)
+        return;
+
+    SvgSt *svg = s;
+
+    svg->qtdPontos = 0;
 }
 
