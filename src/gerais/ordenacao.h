@@ -15,6 +15,6 @@ typedef enum{
     MS
 }ALGORITMO;
 
-void ordenar(FORMA vet[], int n, int k, ALGORITMO algoritmo, ComparadorForma comparar, SVG svg, ARVORE banco);
+void ordenar(FORMA vet[], int n, ALGORITMO algoritmo, ComparadorForma comparar, SVG svg, ARVORE banco);
 
 #endif

@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "ordenacao.h"
 
@@ -6,41 +7,41 @@
 /* ======================== FUNÇÕES AUXILIARES ======================== */
 static void troca(FORMA *a, FORMA *b);
 
-static void selectionSort(FORMA vet[], int n, int k, ComparadorForma comparar, SVG svg, ARVORE banco);
-static void bubbleSort(FORMA vet[], int n, int k, ComparadorForma comparar, SVG svg, ARVORE banco);
-static void insertionSort(FORMA vet[], int n, int k, ComparadorForma comparar, SVG svg, ARVORE banco);
-static void shellSort(FORMA vet[], int n, int k, ComparadorForma comparar, SVG svg, ARVORE banco);
-static void quickSort(FORMA vet[], int inicio, int fim, int n, int k, ComparadorForma comparar, SVG svg, ARVORE banco);
-static int particiona(FORMA vet[], int inicio, int fim, int n, int k, ComparadorForma comparar, SVG svg, ARVORE banco);
-static void mergeSort(FORMA vet[], int inicio, int fim, int k, ComparadorForma comparar, SVG svg, ARVORE banco);
-static void merge(FORMA vet[], int inicio, int meio, int fim, int k, ComparadorForma comparar, SVG svg, ARVORE banco);
+static void selectionSort(FORMA vet[], int n, ComparadorForma comparar, SVG svg, ARVORE banco);
+static void bubbleSort(FORMA vet[], int n, ComparadorForma comparar, SVG svg, ARVORE banco);
+static void insertionSort(FORMA vet[], int n, ComparadorForma comparar, SVG svg, ARVORE banco);
+static void shellSort(FORMA vet[], int n, ComparadorForma comparar, SVG svg, ARVORE banco);
+static void quickSort(FORMA vet[], int inicio, int fim, int n, ComparadorForma comparar, SVG svg, ARVORE banco);
+static int particiona(FORMA vet[], int inicio, int fim, int n, ComparadorForma comparar, SVG svg, ARVORE banco);
+static void mergeSort(FORMA vet[], int inicio, int fim, ComparadorForma comparar, SVG svg, ARVORE banco);
+static void merge(FORMA vet[], int inicio, int meio, int fim, ComparadorForma comparar, SVG svg, ARVORE banco);
 
 /* ======================== FUNÇÃO PRINCIPAL ======================== */
 
-void ordenar(FORMA vet[], int n, int k, ALGORITMO algoritmo, ComparadorForma comparar, SVG svg, ARVORE banco){
+void ordenar(FORMA vet[], int n, ALGORITMO algoritmo, ComparadorForma comparar, SVG svg, ARVORE banco){
     switch (algoritmo){
         case SS:
-            selectionSort(vet, n, k, comparar, svg, banco);
+            selectionSort(vet, n, comparar, svg, banco);
             break;
 
         case BS:
-            bubbleSort(vet, n, k, comparar, svg, banco);
+            bubbleSort(vet, n, comparar, svg, banco);
             break;
 
         case IS:
-            insertionSort(vet, n, k, comparar, svg, banco);
+            insertionSort(vet, n, comparar, svg, banco);
             break;
 
         case SHS:
-            shellSort(vet, n, k, comparar, svg, banco);
+            shellSort(vet, n, comparar, svg, banco);
             break;
 
         case QS:
-            quickSort(vet, 0, n - 1, n, k, comparar, svg, banco);
+            quickSort(vet, 0, n - 1, n, comparar, svg, banco);
             break;
 
         case MS:
-            mergeSort(vet, 0, n - 1, k, comparar, svg, banco);
+            mergeSort(vet, 0, n - 1, comparar, svg, banco);
             break;
     }
 }
@@ -52,7 +53,7 @@ static void troca(FORMA *a, FORMA *b){
     *b = aux;
 }
 
-static void selectionSort(FORMA vet[], int n, int k, ComparadorForma comparar, SVG svg, ARVORE banco){
+static void selectionSort(FORMA vet[], int n, ComparadorForma comparar, SVG svg, ARVORE banco){
     for(int i = 0; i < n - 1; i++){
 
         int menor = i;
@@ -71,7 +72,7 @@ static void selectionSort(FORMA vet[], int n, int k, ComparadorForma comparar, S
     }
 }
 
-static void bubbleSort(FORMA vet[], int n, int k, ComparadorForma comparar, SVG svg, ARVORE banco){
+static void bubbleSort(FORMA vet[], int n, ComparadorForma comparar, SVG svg, ARVORE banco){
     for(int i = 0; i < n - 1; i++){
 
         int trocou = 0;
@@ -93,7 +94,7 @@ static void bubbleSort(FORMA vet[], int n, int k, ComparadorForma comparar, SVG 
     }
 }
 
-static void insertionSort(FORMA vet[], int n, int k, ComparadorForma comparar, SVG svg, ARVORE banco){
+static void insertionSort(FORMA vet[], int n, ComparadorForma comparar, SVG svg, ARVORE banco){
     for(int i = 1; i < n; i++){
 
         FORMA chave = vet[i];
@@ -114,7 +115,7 @@ static void insertionSort(FORMA vet[], int n, int k, ComparadorForma comparar, S
     }
 }
 
-static void shellSort(FORMA vet[], int n, int k, ComparadorForma comparar, SVG svg, ARVORE banco){
+static void shellSort(FORMA vet[], int n, ComparadorForma comparar, SVG svg, ARVORE banco){
     for (int gap = n / 2; gap > 0; gap /= 2){
 
         for (int i = gap; i < n; i++){
@@ -146,16 +147,16 @@ static void shellSort(FORMA vet[], int n, int k, ComparadorForma comparar, SVG s
     }
 }
 
-static void quickSort(FORMA vet[], int inicio, int fim, int n, int k, ComparadorForma comparar, SVG svg, ARVORE banco){
+static void quickSort(FORMA vet[], int inicio, int fim, int n, ComparadorForma comparar, SVG svg, ARVORE banco){
     if (inicio < fim){
-        int p = particiona(vet, inicio, fim, n, k, comparar, svg, banco);
+        int p = particiona(vet, inicio, fim, n, comparar, svg, banco);
 
-        quickSort(vet, inicio, p - 1, n, k, comparar, svg, banco);
-        quickSort(vet, p + 1, fim, n, k, comparar, svg, banco);
+        quickSort(vet, inicio, p - 1, n, comparar, svg, banco);
+        quickSort(vet, p + 1, fim, n, comparar, svg, banco);
     }
 }
 
-static int particiona(FORMA vet[], int inicio, int fim, int n, int k, ComparadorForma comparar, SVG svg, ARVORE banco){
+static int particiona(FORMA vet[], int inicio, int fim, int n, ComparadorForma comparar, SVG svg, ARVORE banco){
     FORMA pivo = vet[fim];
 
     int i = inicio - 1;
@@ -189,19 +190,19 @@ static int particiona(FORMA vet[], int inicio, int fim, int n, int k, Comparador
     return i + 1;
 }
 
-static void mergeSort(FORMA vet[], int inicio, int fim, int k, ComparadorForma comparar, SVG svg, ARVORE banco){
+static void mergeSort(FORMA vet[], int inicio, int fim, ComparadorForma comparar, SVG svg, ARVORE banco){
     if (inicio >= fim)
         return;
 
     int meio = (inicio + fim) / 2;
 
-    mergeSort(vet, inicio, meio, k, comparar, svg, banco);
-    mergeSort(vet, meio + 1, fim, k, comparar, svg, banco);
+    mergeSort(vet, inicio, meio, comparar, svg, banco);
+    mergeSort(vet, meio + 1, fim, comparar, svg, banco);
 
-    merge(vet, inicio, meio, fim, k, comparar, svg, banco);
+    merge(vet, inicio, meio, fim, comparar, svg, banco);
 }
 
-static void merge(FORMA vet[], int inicio, int meio, int fim, int k, ComparadorForma comparar, SVG svg, ARVORE banco){
+static void merge(FORMA vet[], int inicio, int meio, int fim, ComparadorForma comparar, SVG svg, ARVORE banco){
     int n1 = meio - inicio + 1;
     int n2 = fim - meio;
 
