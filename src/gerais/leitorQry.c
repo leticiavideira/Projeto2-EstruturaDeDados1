@@ -35,13 +35,13 @@ typedef struct {
 } QrySt;
 
 /* ======================== FUNÇÕES AUXILIARES ======================== */
-static void exeCmd (QrySt *qry, char *cmd);
+static void exeCmd (QrySt *qry, FILE *arq, char *cmd);
 
-static void exeCmdSel (QrySt *qry);
-static void exeCmdFind (QrySt *qry);
-static void exeCmdFindRm (QrySt *qry);
-static void exeCmdCm (QrySt *qry);
-static void exeCmdMc(QrySt *qry);
+static void exeCmdSel (QrySt *qry, FILE *arq);
+static void exeCmdFind (QrySt *qry, FILE *arq);
+static void exeCmdFindRm (QrySt *qry, FILE *arq);
+static void exeCmdCm (QrySt *qry, FILE *arq);
+static void exeCmdMc(QrySt *qry, FILE *arq);
 
 static int formaDentroRegiao(FORMA f, double x, double y, double w, double h);
 
@@ -86,7 +86,28 @@ LEITOR_QRY criarLeitorQry(char *dirSaida, DadosArquivo geo, DadosArquivo qry, AR
 
     char caminhoTxt[1024];
 
-    montarCaminhoTXT(caminhoTxt, dirSaida, geo, qry);
+    char nomeGeo[256];
+    char nomeQry[256];
+
+    strcpy(nomeGeo, getNomeArq(geo));
+    strcpy(nomeQry, getNomeArq(qry));
+
+    char *p = strrchr(nomeGeo, '.');
+    if (p != NULL)
+        *p = '\0';
+
+    p = strrchr(nomeQry, '.');
+    if (p != NULL)
+        *p = '\0';
+
+    snprintf(
+        caminhoTxt,
+        sizeof(caminhoTxt),
+        "%s/%s-%s.txt",
+        dirSaida,
+        nomeGeo,
+        nomeQry
+    );
 
     novo->txt = fopen(caminhoTxt, "w");
 
@@ -105,16 +126,19 @@ void executarQry(LEITOR_QRY leitor){
 
     QrySt *qry = (QrySt *) leitor;
 
-    FILE *arquivoQry = getArquivoLeitura(qry->qry);
-        if (arquivoQry == NULL)
-            return;
+    FILE *arquivoQry = fopen(getPathArq(qry->qry), "r");
+
+    if (arquivoQry == NULL)
+        return;
 
     char comando[64];
 
     while (fscanf(arquivoQry, "%63s", comando) == 1){
 
-        exeCmd(qry, comando);
+        exeCmd(qry, arquivoQry, comando);
     }
+
+    fclose(arquivoQry);
 }
 
 void destruirLeitorQry(LEITOR_QRY leitor){
@@ -132,30 +156,28 @@ void destruirLeitorQry(LEITOR_QRY leitor){
 }
 
 /* ======================== IMPLEMENTAÇÃO DAS FUNÇÕES AUXILIARES ======================== */
-static void exeCmd(QrySt *qry, char *cmd){
+static void exeCmd(QrySt *qry, FILE *arq, char *cmd){
 
     if(strcmp(cmd, "sel") == 0){
-        exeCmdSel(qry);
+        exeCmdSel(qry, arq);
     }
     else if(strcmp(cmd, "find") == 0){
-        exeCmdFind(qry);
+        exeCmdFind(qry, arq);
     }
     else if(strcmp(cmd, "findrm") == 0){
-        exeCmdFindRm(qry);
+        exeCmdFindRm(qry, arq);
     }
     else if(strcmp(cmd, "cm") == 0){
-        exeCmdCm(qry);
+        exeCmdCm(qry, arq);
     }
     else if(strcmp(cmd, "mc") == 0){
-        exeCmdMc(qry);
+        exeCmdMc(qry, arq);
     }
 }
 
-static void exeCmdSel(QrySt *qry){
+static void exeCmdSel(QrySt *qry, FILE *arq){
 
     double x, y, w, h;
-
-    FILE *arq = getArquivoLeitura(qry->qry);
 
     if(fscanf(arq,"%lf %lf %lf %lf",
               &x,&y,&w,&h) != 4)
@@ -197,7 +219,7 @@ static void exeCmdSel(QrySt *qry){
     svgDesenharSelecao(qry->svg, x, y, w, h);
 }
 
-static void exeCmdFind(QrySt *qry){
+static void exeCmdFind(QrySt *qry, FILE *arq){
 
     int k;
     char alg[32];
@@ -206,8 +228,6 @@ static void exeCmdFind(QrySt *qry){
     double x;
     double y;
     double dw;
-
-    FILE *arq = getArquivoLeitura(qry->qry);
 
     if(fscanf(arq,
               "%d %31s %31s %lf %lf %lf",
@@ -221,7 +241,7 @@ static void exeCmdFind(QrySt *qry){
     produzirOrdenacao(qry, k, lerAlgoritmo(alg), lerCriterio(crit), x, y, dw, 0);
 }
 
-static void exeCmdFindRm(QrySt *qry){
+static void exeCmdFindRm(QrySt *qry, FILE *arq){
 
     int k;
     char alg[32];
@@ -230,8 +250,6 @@ static void exeCmdFindRm(QrySt *qry){
     double x;
     double y;
     double dw;
-
-    FILE *arq = getArquivoLeitura(qry->qry);
 
     if(fscanf(arq,
               "%d %31s %31s %lf %lf %lf",
@@ -254,7 +272,7 @@ static void exeCmdFindRm(QrySt *qry){
     );
 }
 
-static void exeCmdCm(QrySt *qry){
+static void exeCmdCm(QrySt *qry, FILE *arq){
 
     double x;
     double y;
@@ -262,8 +280,6 @@ static void exeCmdCm(QrySt *qry){
     double h;
     double dx;
     double dy;
-
-    FILE *arq = getArquivoLeitura(qry->qry);
 
     if(fscanf(arq,
               "%lf %lf %lf %lf %lf %lf",
@@ -312,12 +328,10 @@ static void exeCmdCm(QrySt *qry){
     free(vet);
 }
 
-static void exeCmdMc(QrySt *qry){
+static void exeCmdMc(QrySt *qry, FILE *arq){
 
     char corBorda[64];
     char corPreenchimento[64];
-
-    FILE *arq = getArquivoLeitura(qry->qry);
 
     if(fscanf(arq,
               "%63s %63s",
@@ -493,7 +507,6 @@ static void produzirOrdenacao(QrySt *qry, int k, ALGORITMO alg, CRITERIO crit, d
     ordenar(
         vet,
         n,
-        k,
         alg,
         obterComparador(crit),
         qry->svg,
