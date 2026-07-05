@@ -72,8 +72,6 @@ FORMA popIdArvore (ARVORE a, int id){
     return removida;
 }
 
-void percorrerArvore (ARVORE a);
-
 int arvoreParaVetor (ARVORE a, FORMA vet[]){
     if (a == NULL)
         return -1;
