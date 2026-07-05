@@ -92,6 +92,12 @@ double getY2_L (LINHA l);
  */
 char* getCor_L (LINHA l);
 
+/**
+ * @brief Obtém a altura da linha.
+ * 
+ * @param l Ponteiro para a linha.
+ * @return A altura da linha.
+ */
 double getAltura_L (LINHA l);
 
 /**
