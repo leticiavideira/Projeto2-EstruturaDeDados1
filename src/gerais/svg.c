@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include <string.h>
 
 #include "svg.h"
@@ -517,7 +518,7 @@ static void desenharForma(FILE *arq,FORMA f){
 
             fprintf(arq,
             "<circle cx='%.2lf' cy='%.2lf' r='%.2lf' "
-            "fill='%s' stroke='%s'/>\n",
+            "fill='%s' fill-opacity='0.6' stroke='%s'/>\n",
 
             getX_C(c),
             getY_C(c),
@@ -536,7 +537,7 @@ static void desenharForma(FILE *arq,FORMA f){
 
             "<rect x='%.2lf' y='%.2lf' "
             "width='%.2lf' height='%.2lf' "
-            "fill='%s' stroke='%s'/>\n",
+            "fill='%s' fill-opacity='0.6' stroke='%s'/>\n",
 
             getX_R(r),
             getY_R(r),
@@ -632,49 +633,70 @@ static void desenharVetorOrdenacao(FILE *arq, SvgSt *svg, FORMA vet[], int n){
     if(vet == NULL || n <= 0)
         return;
 
-    for(int i=0;i<n;i++){
+    double xAtual = svg->ordX;
 
-        double x = svg->ordX + i * svg->ordDW;
+    for(int i = 0; i < n; i++){
+
         double y = svg->ordY;
 
         fprintf(arq,
-            "<circle "
-            "cx='%.2lf' "
-            "cy='%.2lf' "
-            "r='4' "
-            "fill='blue'/>\n",
-            x,
+            "<circle cx='%.2lf' cy='%.2lf' r='4' fill='blue'/>\n",
+            xAtual,
             y);
 
         fprintf(arq,
-            "<text "
-            "x='%.2lf' "
-            "y='%.2lf' "
-            "font-size='9' "
-            "text-anchor='middle'>"
-            "%d"
-            "</text>\n",
-            x,
+            "<text x='%.2lf' y='%.2lf' font-size='9' text-anchor='middle'>%d</text>\n",
+            xAtual,
             y - 8,
             i);
 
         double ax, ay;
-
         getAncoraForma(vet[i], &ax, &ay);
 
         fprintf(arq,
-            "<line "
-            "x1='%.2lf' "
-            "y1='%.2lf' "
-            "x2='%.2lf' "
-            "y2='%.2lf' "
-            "stroke='blue' "
-            "stroke-width='1'/>\n",
-            x,
+            "<line x1='%.2lf' y1='%.2lf' x2='%.2lf' y2='%.2lf' stroke='blue' stroke-width='1'/>\n",
+            xAtual,
             y,
             ax,
             ay);
+
+        double largura = 0;
+
+        switch(getTipoForma(vet[i])){
+
+            case FORMA_CIRCULO: {
+                CIRCULO c = getDataForma(vet[i]);
+                largura = 2 * getR_C(c);
+                break;
+            }
+
+            case FORMA_RETANGULO: {
+                RETANGULO r = getDataForma(vet[i]);
+                largura = getW_R(r);
+                break;
+            }
+
+            case FORMA_TEXTO: {
+                TEXTO t = getDataForma(vet[i]);
+                largura = strlen(getTxto_T(t)) * 1.0;
+                break;
+            }
+
+            case FORMA_LINHA: {
+                LINHA l = getDataForma(vet[i]);
+                double dx = getX2_L(l) - getX1_L(l);
+                double dy = getY2_L(l) - getY1_L(l);
+                largura = sqrt(dx*dx + dy*dy);
+                break;
+            }
+
+            default:
+                largura = 10;
+        }
+
+        xAtual += largura + svg->ordDW;
     }
+
 }
 
 void svgDesenharSelecao(SVG s, double x, double y, double w, double h){
