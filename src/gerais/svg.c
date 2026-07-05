@@ -344,9 +344,6 @@ void svgIniciarMarcadores(SVG s){
     svgLimparMarcadores(s);
 }
 
-void svgFinalizarMarcadores(SVG s){
-
-}
 
 void svgDefinirLayoutOrdenacao(SVG s, double x, double y, double dw){
     if(s == NULL)
