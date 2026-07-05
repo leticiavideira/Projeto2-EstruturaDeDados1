@@ -516,11 +516,13 @@ static void produzirOrdenacao(QrySt *qry, int k, ALGORITMO alg, CRITERIO crit, d
     if(k > n)
         k = n;
 
+    double xAtual = x;
+
     for(int i = 0; i < k; i++){
 
         moverFormaParaPosicao(
             vet[i],
-            x + i * dw,
+            xAtual,
             y
         );
 
@@ -532,6 +534,10 @@ static void produzirOrdenacao(QrySt *qry, int k, ALGORITMO alg, CRITERIO crit, d
             crit
         );
 
+        
+        double largura = getLarguraForma(vet[i]);
+
+        xAtual += largura + dw;
     }
 
     if(remover){
