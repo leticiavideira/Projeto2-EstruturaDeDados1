@@ -143,7 +143,7 @@ double getAlturaForma (FORMA f){
 
 char* getCorPreenchimentoForma (FORMA f){
     if (f == NULL)
-        return -1;
+        return NULL;
     FormaSt *forma = (FormaSt*) f;
 
     switch (forma->tipo) {
@@ -160,7 +160,7 @@ char* getCorPreenchimentoForma (FORMA f){
             return getCorp_T(forma->data);
 
         default:
-            return -1;
+            return NULL;
     }
 }
 
