@@ -71,8 +71,20 @@ double getY_C (CIRCULO c);
  */
 double getR_C (CIRCULO c);
 
+/**
+ * @brief Retorna a largura do círculo.
+ * 
+ * @param c Ponteiro para o círculo.
+ * @return double Largura do círculo.
+ */
 double getLargura_C (CIRCULO c);
 
+/**
+ * @brief Retorna a altura do círculo.
+ * 
+ * @param c Ponteiro para o círculo.
+ * @return double Altura do círculo.
+ */
 double getAltura_C (CIRCULO c);
 
 /**
