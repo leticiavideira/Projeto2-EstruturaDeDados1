@@ -99,6 +99,12 @@ char getA_T (TEXTO t);
  */
 char* getTxto_T (TEXTO t);
 
+/**
+ * @brief Retorna a altura do objeto texto.
+ *
+ * @param t texto.
+ * @return Altura do objeto texto.
+ */
 double getAltura_T (TEXTO t);
 
 
@@ -110,6 +116,12 @@ double getAltura_T (TEXTO t);
   */
 double getComprimento_T (TEXTO t);
 
+/**
+ * @brief Retorna a largura do objeto texto.
+ *
+ * @param t texto.
+ * @return Largura do objeto texto.
+ */
 double getLargura_T (TEXTO t);
 
 /**
