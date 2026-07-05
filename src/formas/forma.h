@@ -44,28 +44,124 @@ typedef void* FORMA;
  */
 FORMA criarForma(FormaTipo tipo, void *data);
 
+/**
+ * @brief Retorna a coordenada x da forma.
+ *
+ * @param f Forma.
+ *
+ * @return double Coordenada x da forma.
+ * @return double -1 em caso de erro ou tipo incompatível.
+ */
 double getXForma (FORMA f);
 
+/**
+ * @brief Retorna a coordenada y da forma.
+ *
+ * @param f Forma.
+ *
+ * @return double Coordenada y da forma.
+ * @return double -1 em caso de erro ou tipo incompatível.
+ */
 double getYForma (FORMA f);
 
+/**
+ * @brief Calcula e retorna a área da forma.
+ *
+ * @param f Forma.
+ *
+ * @return double Área da forma.
+ * @return double -1 em caso de erro ou tipo incompatível.
+ */
 double getAreaForma (FORMA f);
 
+/**
+ * @brief Retorna a largura da forma.
+ *
+ * @param f Forma.
+ *
+ * @return double Largura da forma.
+ * @return double -1 em caso de erro ou tipo incompatível.
+ */
 double getLarguraForma (FORMA f);
 
+/**
+ * @brief Retorna a altura da forma.
+ *
+ * @param f Forma.
+ *
+ * @return double Altura da forma.
+ * @return double -1 em caso de erro ou tipo incompatível.
+ */
 double getAlturaForma (FORMA f);
 
+/**
+ * @brief Retorna a cor de preenchimento da forma.
+ *
+ * @param f Forma.
+ *
+ * @return char* String contendo a cor de preenchimento.
+ * @return NULL em caso de erro ou tipo incompatível.
+ */
 char* getCorPreenchimentoForma (FORMA f);
 
+/**
+ * @brief Retorna a cor da borda da forma.
+ *
+ * @param f Forma.
+ *
+ * @return char* String contendo a cor da borda.
+ * @return NULL em caso de erro ou tipo incompatível.
+ */
 char* getCorBordaForma(FORMA f);
 
+/**
+ * @brief Retorna o raio de um círculo.
+ *
+ * @param f Forma.
+ *
+ * @return double Raio do círculo.
+ * @return double -1 caso a forma não seja um círculo ou em caso de erro.
+ */
 double getRaioForma(FORMA f);
 
+/**
+ * @brief Retorna a coordenada x do segundo ponto de uma linha.
+ *
+ * @param f Forma.
+ *
+ * @return double Coordenada x do segundo ponto.
+ * @return double -1 caso a forma não seja uma linha ou em caso de erro.
+ */
 double getX2Forma(FORMA f);
 
+/**
+ * @brief Retorna a coordenada y do segundo ponto de uma linha.
+ *
+ * @param f Forma.
+ *
+ * @return double Coordenada y do segundo ponto.
+ * @return double -1 caso a forma não seja uma linha ou em caso de erro.
+ */
 double getY2Forma(FORMA f);
 
+/**
+ * @brief Retorna o tipo de âncora de um texto.
+ *
+ * @param f Forma.
+ *
+ * @return char Caractere que representa a âncora do texto.
+ * @return '\0' caso a forma não seja um texto ou em caso de erro.
+ */
 char getAncoraTextoForma(FORMA f);
 
+/**
+ * @brief Retorna o conteúdo textual armazenado em uma forma texto.
+ *
+ * @param f Forma.
+ *
+ * @return char* String contendo o texto.
+ * @return NULL caso a forma não seja um texto ou em caso de erro.
+ */
 char* getConteudoTextoForma(FORMA f);
 
 /**
@@ -119,6 +215,14 @@ FormaTipo getTipoForma(FORMA f);
  */
 void* getDataForma(FORMA f);
 
+/**
+ * @brief Define o identificador da forma.
+ *
+ * @param f Forma.
+ * @param id Novo identificador.
+ *
+ * @note O identificador é atualizado de acordo com o tipo específico da forma.
+ */
 void setIdForma(FORMA f, int id);
 
 /**
