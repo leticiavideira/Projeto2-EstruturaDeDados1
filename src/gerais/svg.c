@@ -59,6 +59,7 @@ static char *montarNomeSnapshot(SvgSt *svg);
 static FILE *abrirSVG(char *nome);  
 static void fecharSVG(FILE *arq);
 static void desenharForma(FILE *arq,FORMA f);  
+static void desenharFormaPosicionada(FILE *arq, FORMA f, double x, double y);
 static void desenharBanco(FILE *arq,ARVORE banco);
 static void desenharVetorOrdenacao(FILE *arq, SvgSt *svg, FORMA vet[], int n);
 static void desenharPontos(FILE *arq, SvgSt *svg);
@@ -608,6 +609,107 @@ static void desenharForma(FILE *arq,FORMA f){
     }
 }
 
+static void desenharFormaPosicionada(FILE *arq, FORMA f, double x, double y){
+    switch(getTipoForma(f)){
+
+        case FORMA_CIRCULO:{
+
+            CIRCULO c = getDataForma(f);
+
+            fprintf(arq,
+                "<circle "
+                "cx='%.2lf' cy='%.2lf' r='%.2lf' "
+                "fill='%s' fill-opacity='0.6' stroke='%s'/>\n",
+
+                x,
+                y,
+                getR_C(c),
+                getCorP_C(c),
+                getCorB_C(c));
+
+            break;
+        }
+          case FORMA_RETANGULO:{
+
+            RETANGULO r = getDataForma(f);
+
+            fprintf(arq,
+
+                "<rect "
+                "x='%.2lf' y='%.2lf' "
+                "width='%.2lf' height='%.2lf' "
+                "fill='%s' fill-opacity='0.6' stroke='%s'/>\n",
+
+                x,
+                y,
+                getW_R(r),
+                getH_R(r),
+                getCorP_R(r),
+                getCorB_R(r));
+
+            break;
+        }
+              case FORMA_TEXTO:{
+
+            TEXTO t = getDataForma(f);
+
+            char *anchor = "start";
+
+            char a = getA_T(t);
+
+            if(a=='m'||a=='M')
+                anchor="middle";
+            else if(a=='f'||a=='F')
+                anchor="end";
+
+            fprintf(arq,
+
+                "<text "
+                "x='%.2lf' "
+                "y='%.2lf' "
+                "fill='%s' "
+                "stroke='%s' "
+                "text-anchor='%s'>"
+                "%s"
+                "</text>\n",
+
+                x,
+                y,
+                getCorp_T(t),
+                getCorb_T(t),
+                anchor,
+                getTxto_T(t));
+
+            break;
+        }
+         case FORMA_LINHA:{
+
+            LINHA l = getDataForma(f);
+
+            double dx = getX2_L(l) - getX1_L(l);
+            double dy = getY2_L(l) - getY1_L(l);
+
+            fprintf(arq,
+
+                "<line "
+                "x1='%.2lf' y1='%.2lf' "
+                "x2='%.2lf' y2='%.2lf' "
+                "stroke='%s'/>\n",
+
+                x,
+                y,
+                x + dx,
+                y + dy,
+                getCor_L(l));
+
+            break;
+        }
+        default:
+            break;
+    }
+}
+
+
 //DESENHAR TODA A ÁRVORE
 static void desenharBanco(FILE *arq,ARVORE banco){
 
@@ -635,66 +737,16 @@ static void desenharVetorOrdenacao(FILE *arq, SvgSt *svg, FORMA vet[], int n){
 
     double xAtual = svg->ordX;
 
-    for(int i = 0; i < n; i++){
+    for(int i=0;i<n;i++){
 
-        double y = svg->ordY;
-
-        fprintf(arq,
-            "<circle cx='%.2lf' cy='%.2lf' r='4' fill='blue'/>\n",
+        desenharFormaPosicionada(
+            arq,
+            vet[i],
             xAtual,
-            y);
+            svg->ordY
+        );
 
-        fprintf(arq,
-            "<text x='%.2lf' y='%.2lf' font-size='9' text-anchor='middle'>%d</text>\n",
-            xAtual,
-            y - 8,
-            i);
-
-        double ax, ay;
-        getAncoraForma(vet[i], &ax, &ay);
-
-        fprintf(arq,
-            "<line x1='%.2lf' y1='%.2lf' x2='%.2lf' y2='%.2lf' stroke='blue' stroke-width='1'/>\n",
-            xAtual,
-            y,
-            ax,
-            ay);
-
-        double largura = 0;
-
-        switch(getTipoForma(vet[i])){
-
-            case FORMA_CIRCULO: {
-                CIRCULO c = getDataForma(vet[i]);
-                largura = 2 * getR_C(c);
-                break;
-            }
-
-            case FORMA_RETANGULO: {
-                RETANGULO r = getDataForma(vet[i]);
-                largura = getW_R(r);
-                break;
-            }
-
-            case FORMA_TEXTO: {
-                TEXTO t = getDataForma(vet[i]);
-                largura = strlen(getTxto_T(t)) * 1.0;
-                break;
-            }
-
-            case FORMA_LINHA: {
-                LINHA l = getDataForma(vet[i]);
-                double dx = getX2_L(l) - getX1_L(l);
-                double dy = getY2_L(l) - getY1_L(l);
-                largura = sqrt(dx*dx + dy*dy);
-                break;
-            }
-
-            default:
-                largura = 10;
-        }
-
-        xAtual += largura + svg->ordDW;
+        xAtual += getLarguraForma(vet[i]) + svg->ordDW;
     }
 
 }
