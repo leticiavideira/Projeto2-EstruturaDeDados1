@@ -518,6 +518,29 @@ static void produzirOrdenacao(QrySt *qry, int k, ALGORITMO alg, CRITERIO crit, d
 
     double xAtual = x;
 
+    if(remover){
+        for(int i = k; i < n; i++){
+
+            FORMA removida = popIdArvore(
+                qry->banco,
+                getIdForma(vet[i])
+            );
+
+            if(removida == NULL){
+                fprintf(stderr, "Erro ao remover id %d\n", getIdForma(vet[i]));
+            
+            } else{
+                killForma(removida);
+                vet[i] = NULL;
+            }
+        }
+
+        qry->qtdSel = k;
+
+        for(int i = 0; i < k; i++)
+            qry->selecionadas[i] = vet[i];
+    }
+
     for(int i = 0; i < k; i++){
 
         moverFormaParaPosicao(
@@ -538,24 +561,6 @@ static void produzirOrdenacao(QrySt *qry, int k, ALGORITMO alg, CRITERIO crit, d
         double largura = getLarguraForma(vet[i]);
 
         xAtual += largura + dw;
-    }
-
-    if(remover){
-        for(int i = k; i < n; i++){
-
-            FORMA removida = popIdArvore(
-                qry->banco,
-                getIdForma(vet[i])
-            );
-
-            if(removida != NULL)
-                killForma(removida);
-        }
-
-        qry->qtdSel = k;
-
-        for(int i = 0; i < k; i++)
-            qry->selecionadas[i] = vet[i];
     }
 
     svgFinalizarLayoutOrdenacao(qry->svg);

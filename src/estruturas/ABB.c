@@ -234,9 +234,11 @@ static No* removerNo(No *raiz, FORMA f, FORMA *removida){
 
     //Para 2 filhos
     No *pred = maiorEsquerda(raiz->esq);
+    FORMA antiga = raiz->forma;
     raiz->forma = pred->forma;
     FORMA lixo = NULL;
     raiz->esq = removerNo (raiz->esq, pred->forma, &lixo);
+    *removida = antiga;
     return raiz;
 
 }
