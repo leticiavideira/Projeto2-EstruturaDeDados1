@@ -129,7 +129,7 @@ void test_popId_folha(void){
         criaCirculo(10,0,0,1,"b","p"));
 
     FORMA f2=criarForma(FORMA_CIRCULO,
-        criaCirculo(5,0,0,1,"b","p"));
+        criaCirculo(5,0,10,1,"b","p"));
 
     pushArvore(a,f1);
     pushArvore(a,f2);
@@ -183,13 +183,13 @@ void test_arvoreParaVetor(void){
     ARVORE a=criarArvore();
 
     pushArvore(a,criarForma(FORMA_CIRCULO,
-        criaCirculo(3,0,0,1,"b","p")));
+        criaCirculo(3,0,30,1,"b","p")));
 
     pushArvore(a,criarForma(FORMA_CIRCULO,
-        criaCirculo(1,0,0,1,"b","p")));
+        criaCirculo(1,0,10,1,"b","p")));
 
     pushArvore(a,criarForma(FORMA_CIRCULO,
-        criaCirculo(5,0,0,1,"b","p")));
+        criaCirculo(5,0,50,1,"b","p")));
 
     FORMA vet[3];
 
@@ -297,15 +297,15 @@ void test_obterMaiorId(void){
 
     pushArvore(a,
         criarForma(FORMA_CIRCULO,
-        criaCirculo(2,0,0,1,"b","p")));
+        criaCirculo(2,0,20,1,"b","p")));
 
     pushArvore(a,
         criarForma(FORMA_CIRCULO,
-        criaCirculo(80,0,0,1,"b","p")));
+        criaCirculo(80,0,80,1,"b","p")));
 
     pushArvore(a,
         criarForma(FORMA_CIRCULO,
-        criaCirculo(30,0,0,1,"b","p")));
+        criaCirculo(30,0,30,1,"b","p")));
 
     TEST_ASSERT_EQUAL(80,obterMaiorIdArvore(a));
 
