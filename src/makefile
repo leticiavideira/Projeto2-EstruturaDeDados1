@@ -23,6 +23,7 @@ GERAIS_DIR     = gerais
 
 TEST_DIR       = test
 UNITY_DIR      = Unity
+UNITY_SRC      = $(UNITY_DIR)/src
 
 
 # Includes
@@ -31,7 +32,7 @@ INC_FLAGS = \
 -I$(ESTRUTURAS_DIR) \
 -I$(FORMAS_DIR) \
 -I$(GERAIS_DIR) \
--I$(UNITY_DIR)
+-I$(UNITY_SRC)
 
 # Fontes do projeto
 SRCS = main.c \
@@ -62,10 +63,10 @@ tests: $(OBJS)
 		echo "Compilando $$name"; \
 		$(CC) $(CFLAGS) $(INC_FLAGS) \
 		$$test \
-		$(UNITY_DIR)/unity.c \
+		$(UNITY_SRC)/unity.c \
 		$(filter-out main.o,$(OBJS)) \
 		$(LIBS) \
-		-o $(TEST_DIR)/$$name.out ; \
+		-o $(TEST_DIR)/$$name.out || exit 1; \
 	done
 
 run-tests: tests
