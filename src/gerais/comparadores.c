@@ -6,6 +6,9 @@
 #include "../formas/forma.h"
 
 int comparaDefault(FORMA a, FORMA b){
+    if (a == NULL || b == NULL)
+        return 0;
+
     if (getYForma(a) < getYForma(b))
         return -1;
 
@@ -28,6 +31,9 @@ int comparaDefault(FORMA a, FORMA b){
 }
 
 int comparaArea(FORMA a, FORMA b){
+    if(a == NULL || b == NULL)
+        return 0;
+
     double areaA = getAreaForma (a);
     double areaB = getAreaForma (b);
 
@@ -41,6 +47,9 @@ int comparaArea(FORMA a, FORMA b){
 }
 
 int comparaLargura(FORMA a, FORMA b){
+    if(a == NULL || b == NULL)
+        return 0;
+
     double lA = getLarguraForma (a);
     double lB = getLarguraForma (b);
 
@@ -54,6 +63,9 @@ int comparaLargura(FORMA a, FORMA b){
 }
 
 int comparaAltura(FORMA a, FORMA b){
+    if(a == NULL || b == NULL)
+        return 0;
+
     double hA = getAlturaForma (a);
     double hB = getAlturaForma (b);
 
@@ -67,15 +79,27 @@ int comparaAltura(FORMA a, FORMA b){
 }
 
 int comparaCor(FORMA a, FORMA b){
-    int cmp = strcmp(
-        getCorPreenchimentoForma(a),
-        getCorPreenchimentoForma(b)
-    );
+    if(a == NULL || b == NULL)
+        return 0;
 
-    if (cmp < 0)
+    char *corA = getCorPreenchimentoForma(a);
+    char *corB = getCorPreenchimentoForma(b);
+
+    if(corA == NULL && corB == NULL)
+        return 0;
+
+    if(corA == NULL)
         return -1;
 
-    if (cmp > 0)
+    if(corB == NULL)
+        return 1;
+
+    int cmp = strcmp(corA, corB);
+
+    if(cmp < 0)
+        return -1;
+
+    if(cmp > 0)
         return 1;
 
     return 0;
