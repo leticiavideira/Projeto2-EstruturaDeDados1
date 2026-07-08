@@ -67,6 +67,9 @@ int getfSize_T (ESTILO_TEXTO ts){
 }
 
 void killEstiloTexto (ESTILO_TEXTO ts){
+    if(ts == NULL)
+        return;
+        
     EstiloTexto *ts1 = ((EstiloTexto *)ts);
     free(ts1->fFamily);
     free(ts1->fWeight);
