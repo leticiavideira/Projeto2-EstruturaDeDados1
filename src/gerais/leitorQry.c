@@ -60,6 +60,9 @@ static void imprimirFormaSelecionada(FILE *txt, FORMA f, CRITERIO crit);
 /* ======================== FUNÇÕES PRINCIPAIS ======================== */
 
 LEITOR_QRY criarLeitorQry(char *dirSaida, DadosArquivo geo, DadosArquivo qry, ARVORE banco, SVG svg){
+    if (dirSaida == NULL || geo == NULL || qry == NULL || banco == NULL || svg == NULL)
+        return NULL;
+    
     QrySt *novo = malloc(sizeof(QrySt));
 
     if (novo == NULL)
