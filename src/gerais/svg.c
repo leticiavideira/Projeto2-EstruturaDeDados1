@@ -60,7 +60,7 @@ static FILE *abrirSVG(char *nome);
 static void fecharSVG(FILE *arq);
 static void desenharForma(FILE *arq,FORMA f);  
 static void desenharFormaPosicionada(FILE *arq, FORMA f, double x, double y);
-static void desenharBanco(FILE *arq,ARVORE banco);
+static void desenharBanco(FILE *arq,ARVORE banco, FORMA vetOrd[], int nOrd);
 static void desenharVetorOrdenacao(FILE *arq, SvgSt *svg, FORMA vet[], int n);
 static void desenharPontos(FILE *arq, SvgSt *svg);
 
@@ -69,12 +69,20 @@ SVG criarSVG(char *dirSaida,
              DadosArquivo geo,
              DadosArquivo qry){
 
+    if(dirSaida == NULL)
+        return NULL;
+
     SvgSt *svg=malloc(sizeof(SvgSt));
 
     if(svg==NULL)
         return NULL;
 
     svg->dirSaida=duplicarString(dirSaida);
+
+    if(svg->dirSaida == NULL){
+        free(svg);
+        return NULL;
+    }
 
     svg->geo=geo;
     svg->qry=qry;
@@ -212,7 +220,7 @@ void gerarSVGInicial(SVG s, ARVORE banco){
     if(arq==NULL)
         return;
 
-    desenharBanco(arq,banco);
+    desenharBanco(arq,banco, NULL, 0);
 
     fecharSVG(arq);
 }
@@ -234,7 +242,7 @@ void gerarSVGFinal(SVG s, ARVORE banco){
     if(arq==NULL)
         return;
 
-    desenharBanco(arq,banco);
+    desenharBanco(arq,banco, NULL, 0);
 
     desenharSelecao(arq,svg);
 
@@ -264,7 +272,7 @@ void gerarSnapshotOrdenacao(SVG s, ARVORE banco, FORMA vet[], int n){
     if(arq == NULL)
         return;
 
-    desenharBanco(arq, banco);
+    desenharBanco(arq, banco, vet, n);
 
     desenharSelecao(arq, svg);
 
@@ -496,7 +504,9 @@ static FILE *abrirSVG(char *nome){
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 
     fprintf(arq,
-            "<svg xmlns=\"http://www.w3.org/2000/svg\">\n");
+    "<svg xmlns=\"http://www.w3.org/2000/svg\" "
+        "width=\"6000\" "
+        "height=\"6000\">\n");
 
     return arq;
 }
@@ -709,9 +719,21 @@ static void desenharFormaPosicionada(FILE *arq, FORMA f, double x, double y){
     }
 }
 
+static int formaEstaNaOrdenacao(FORMA f, FORMA vet[], int n){
+    if(vet == NULL)
+        return 0;
+
+    for(int i = 0; i < n; i++){
+
+        if(vet[i] == f)
+            return 1;
+    }
+
+    return 0;
+}
 
 //DESENHAR TODA A ÁRVORE
-static void desenharBanco(FILE *arq,ARVORE banco){
+static void desenharBanco(FILE *arq,ARVORE banco, FORMA vetOrd[], int nOrd){
 
     int n=tamanhoArvore(banco);
 
@@ -722,8 +744,13 @@ static void desenharBanco(FILE *arq,ARVORE banco){
 
     arvoreParaVetor(banco,vet);
 
-    for(int i=0;i<n;i++)
-        desenharForma(arq,vet[i]);
+    for(int i = 0; i < n; i++){
+
+        if(formaEstaNaOrdenacao(vet[i], vetOrd, nOrd))
+            continue;
+
+        desenharForma(arq, vet[i]);
+    }
 
     free(vet);
 }
