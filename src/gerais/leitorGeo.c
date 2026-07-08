@@ -30,6 +30,9 @@ static void exeCmd_EstiloTexto(SistemaSt *sis);
 
 /* ======================== FUNÇÔES PRINCIPAIS ======================== */
 SISTEMA processarGeo (DadosArquivo arqData){
+    if(arqData == NULL)
+        return NULL;
+        
     SistemaSt *sis = malloc (sizeof (SistemaSt));
         if (sis == NULL){
             printf ("Erro ao alocar memoria. \n");
@@ -82,7 +85,8 @@ void killSistemaGeo (SISTEMA s){
     SistemaSt *sis = (SistemaSt *) s;
     
     killArvore (sis->formas);
-    killEstiloTexto (sis->estiloAtual);
+    if(sis->estiloAtual != NULL)
+        killEstiloTexto (sis->estiloAtual);
 
     free (sis);
 }
